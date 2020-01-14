@@ -1,22 +1,17 @@
 <?php
-/**
- * Created by xu
- * Date: 22/9/16
- * Time: 11:43 AM
- */
 
-namespace Omnipay\CreditCardPaymentProcessor\Message;
+namespace Omnipay\CreditCardPaymentProcessor\Request;
 
+use Omnipay\CreditCardPaymentProcessor\Response\RedirectCompletePurchaseResponse;
 
 class RedirectCompletePurchaseRequest extends AbstractRequest
 {
     public function getData()
     {
-        parent::getData();
-
         $data = $this->httpRequest->request->all();
 
-        $data['computed_hash_value'] = $this->hashValue($data);
+        $data['hash_value'] = strtolower($data['hash_value'] ?? '');
+        $data['completed_hash_value'] = strtolower($this->hashValue($data));
 
         return $data;
     }
@@ -26,7 +21,7 @@ class RedirectCompletePurchaseRequest extends AbstractRequest
         return $this->response = new RedirectCompletePurchaseResponse($this, $data);
     }
 
-    private function hashValue($data)
+    protected function hashValue($data)
     {
         $strToHash =
             $this->emptyIfNotFound($data, 'version') .
@@ -59,9 +54,11 @@ class RedirectCompletePurchaseRequest extends AbstractRequest
             $this->emptyIfNotFound($data, 'ippPeriod') .
             $this->emptyIfNotFound($data, 'ippInterestType') .
             $this->emptyIfNotFound($data, 'ippInterestRate') .
-            $this->emptyIfNotFound($data, 'ippMerchantAbsorbRate');
+            $this->emptyIfNotFound($data, 'ippMerchantAbsorbRate') .
+            $this->emptyIfNotFound($data, 'payment_scheme') .
+            $this->emptyIfNotFound($data, 'process_by') .
+            $this->emptyIfNotFound($data, 'sub_merchant_list');
 
-        return strtoupper(hash_hmac('sha1', $strToHash, $this->getSecretKey(), false));
-
+        return hash_hmac('sha256', $strToHash, $this->getSecretKey(), false);
     }
 }

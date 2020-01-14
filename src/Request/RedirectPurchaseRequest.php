@@ -1,31 +1,39 @@
 <?php
-namespace Omnipay\CreditCardPaymentProcessor\Message;
 
+namespace Omnipay\CreditCardPaymentProcessor\Request;
 
-class RedirectPurchaseRequest extends AbstractRequest
+use Omnipay\CreditCardPaymentProcessor\Response\RedirectPurchaseResponse;
+
+class RedirectPurchaseRequest extends AbstractRedirectRequest
 {
-
     public function getData()
     {
-        $data = [
-            'version' => self::VERSION,
-            'merchant_id' => $this->getMerchantId(),
-            'payment_description' => $this->getDescription(),
-            'order_id' => $this->orderId(),
-            'invoice_no' => $this->getInvoiceNo(),
-            'amount' => $this->amount(),
-            'currency' => $this->getCurrencyNumeric(),
+        $data = parent::getData();
+
+        $data = $this->mergeData($data, [
+            'customer_email' => $this->getCustomerEmail(),
             'result_url_1' => $this->getReturnUrl(),
             'result_url_2' => $this->getNotifyUrl(),
-            'customer_email' => $this->getCard()->getEmail()
-        ];
+            'payment_option' => $this->getPaymentOption(),
+            'payment_expiry' => $this->getPaymentExpiryFormatted(),
+            'default_lang' => $this->getDefaultLanguage(),
+            'sub_merchant_list' => null, // base64_encode(json_encode([]))
+            'airline_passenger_list' => null // base64_encode(json_encode([]))
+        ]);
+
+        $data = $this->filterData($data);
 
         $data['hash_value'] = $this->hashValue($data);
 
         return $data;
     }
 
-    private function hashValue($data)
+    public function sendData($data)
+    {
+        return $this->response = new RedirectPurchaseResponse($this, $data);
+    }
+
+    protected function hashValue($data)
     {
         $strToHash =
             $this->emptyIfNotFound($data, 'version') .
@@ -46,8 +54,7 @@ class RedirectPurchaseRequest extends AbstractRequest
             $this->emptyIfNotFound($data, 'result_url_1') .
             $this->emptyIfNotFound($data, 'result_url_2') .
             $this->emptyIfNotFound($data, 'enable_store_card') .
-            $this->emptyIfNotFound($data, 'user_defined_5') .
-            $this->emptyIfNotFound($data, 'pan_masked') .
+            $this->emptyIfNotFound($data, 'stored_card_unique_id') .
             $this->emptyIfNotFound($data, 'request_3ds') .
             $this->emptyIfNotFound($data, 'recurring') .
             $this->emptyIfNotFound($data, 'order_prefix') .
@@ -62,24 +69,19 @@ class RedirectPurchaseRequest extends AbstractRequest
             $this->emptyIfNotFound($data, 'ipp_interest_type') .
             $this->emptyIfNotFound($data, 'payment_expiry') .
             $this->emptyIfNotFound($data, 'default_lang') .
-            $this->emptyIfNotFound($data, 'statement_descriptor');
+            $this->emptyIfNotFound($data, 'statement_descriptor') .
+            $this->emptyIfNotFound($data, 'use_storedcard_only') .
+            $this->emptyIfNotFound($data, 'tokenize_without_authorization') .
+            $this->emptyIfNotFound($data, 'product') .
+            $this->emptyIfNotFound($data, 'ipp_period_filter') .
+            $this->emptyIfNotFound($data, 'sub_merchant_list') .
+            $this->emptyIfNotFound($data, 'qr_type') .
+            $this->emptyIfNotFound($data, 'custom_route_id') .
+            $this->emptyIfNotFound($data, 'airline_transaction') .
+            $this->emptyIfNotFound($data, 'airline_passenger_list') .
+            $this->emptyIfNotFound($data, 'address_list')
+        ;
 
-        return strtoupper(hash_hmac('sha1', $strToHash, $this->getSecretKey(), false));
+        return hash_hmac('sha256', $strToHash, $this->getSecretKey(), false);
     }
-
-    private function amount()
-    {
-        return str_pad($this->getAmountInteger(), 12, '0', STR_PAD_LEFT);
-    }
-
-    private function orderId()
-    {
-        return str_pad($this->getTransactionId(), 12, '0', STR_PAD_LEFT);
-    }
-
-    public function sendData($data)
-    {
-        return $this->response = new RedirectPurchaseResponse($this, $data);
-    }
-
 }

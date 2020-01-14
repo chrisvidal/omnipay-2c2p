@@ -1,5 +1,5 @@
 {
-    "name": "dilab/omnipay-2c2p",
+    "name": "laijingwu/omnipay-2c2p",
     "description": "2c2p gateway for Omnipay payment processing library",
     "keywords": [
         "gateway",
@@ -11,17 +11,17 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "xu ding",
-            "email": "thedilab@gmail.com"
+            "name": "laijingwu",
+            "email": "admin@laijingwu.com"
         }
     ],
     "minimum-stability": "stable",
     "require": {
-        "omnipay/common": "3.0-beta.1",
+        "omnipay/common": "^3",
         "php-http/guzzle6-adapter": "^1.1"
     },
     "require-dev": {
-        "omnipay/tests": "3.0-beta.1"
+        "omnipay/tests": "^3"
     },
     "autoload": {
         "psr-4": { "Omnipay\\CreditCardPaymentProcessor\\" : "src/" }
