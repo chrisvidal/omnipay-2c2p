@@ -12,7 +12,9 @@ class RedirectCompletePurchaseResponse extends AbstractResponse
     {
         parent::__construct($request, $data);
 
-        if (strcmp($this->data['hash_value'], $this->data['completed_hash_value']) != 0) {
+        if (empty($this->data)) {
+            $this->data['payment_status'] = RedirectReference::STATUS_FAILED;
+        } elseif (strcmp($this->data['hash_value'], $this->data['completed_hash_value']) != 0) {
             $this->data['payment_status'] = RedirectReference::STATUS_INVALID_HASH;
         }
     }

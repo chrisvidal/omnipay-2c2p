@@ -68,6 +68,21 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         return 'POST';
     }
 
+    protected function implodeArray($data)
+    {
+        if (is_string($data)) {
+            return $data;
+        }
+
+        if (is_array($data)) {
+            foreach ($data as $key => $val) {
+                $data[$key] = $this->implodeArray($val);
+            }
+        }
+
+        return implode('', array_values($data));
+    }
+
     protected function emptyIfNotFound($haystack, $needle)
     {
         if (!isset($haystack[$needle])) {
@@ -75,7 +90,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         }
 
         if (is_array($haystack[$needle])) {
-            return implode('', array_values($haystack[$needle]));
+            return $this->implodeArray($haystack[$needle]);
         }
 
         return $haystack[$needle];
@@ -91,6 +106,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
                         $sortKey = ['subMID', 'subAmount'];
                         break;
                     case 'refundList':
+                        $list = array_values($list['refund']);
                         $sortKey = [
                             'referenceNo', 'status', 'amount', 'dateTime', 'userDefined1', 'userDefined2',
                             'userDefined3', 'userDefined4', 'userDefined5'

@@ -10,8 +10,10 @@ class RedirectCompletePurchaseRequest extends AbstractRequest
     {
         $data = $this->httpRequest->request->all();
 
-        $data['hash_value'] = strtolower($data['hash_value'] ?? '');
-        $data['completed_hash_value'] = strtolower($this->hashValue($data));
+        if (!empty($data)) {
+            $data['hash_value'] = strtolower($data['hash_value'] ?? '');
+            $data['completed_hash_value'] = strtolower($this->hashValue($data));
+        }
 
         return $data;
     }
