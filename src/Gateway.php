@@ -1,6 +1,8 @@
 <?php
+
 namespace Omnipay\CreditCardPaymentProcessor;
 
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Omnipay\Common\AbstractGateway;
 
 /**
@@ -123,6 +125,16 @@ class Gateway extends AbstractGateway
 
 
     /** Only for payment action request */
+    public function getRequestPublicKey()
+    {
+        return $this->getParameter('requestPublicKey');
+    }
+
+    public function setRequestPublicKey($publicKey)
+    {
+        return $this->setParameter('requestPublicKey', $publicKey);
+    }
+
     public function getPublicKey()
     {
         return $this->getParameter('publicKey');
@@ -203,5 +215,10 @@ class Gateway extends AbstractGateway
     public function supportsRefundQuery()
     {
         return method_exists($this, 'refundQuery');
+    }
+
+    public function setRequest(HttpRequest $httpRequest)
+    {
+        $this->httpRequest = $httpRequest;
     }
 }

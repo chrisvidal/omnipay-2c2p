@@ -13,6 +13,16 @@ abstract class AbstractPaymentActionRequest extends AbstractRequest
     protected $endPointTest = 'https://demo2.2c2p.com/2C2PFrontend/PaymentActionV2/PaymentAction.aspx';
     protected $endPointProduction = 'https://t.2c2p.com/PaymentActionV2/PaymentAction.aspx';
 
+    public function getRequestPublicKey()
+    {
+        return $this->getParameter('requestPublicKey');
+    }
+
+    public function setRequestPublicKey($publicKey)
+    {
+        return $this->setParameter('requestPublicKey', $publicKey);
+    }
+
     public function getPublicKey()
     {
         return $this->getParameter('publicKey');
@@ -129,6 +139,10 @@ abstract class AbstractPaymentActionRequest extends AbstractRequest
             )
         );
 
+        if (!is_array($payload)) {
+            throw new Exception("Decode data error, payload: " . $payload);
+        }
+
         foreach ($payload as $k => $v) {
             if (empty($v)) {
                 $payload[$k] = '';
@@ -141,6 +155,7 @@ abstract class AbstractPaymentActionRequest extends AbstractRequest
     public function getData()
     {
         $this->validate(
+            'requestPublicKey',
             'publicKey',
             'privateKey',
             'pkcs7Password',
@@ -168,7 +183,7 @@ abstract class AbstractPaymentActionRequest extends AbstractRequest
         $url = $this->getRequestUrl();
         $method = $this->getRequestMethod();
         $body = $this->getRequestBody($data);
-        $payload = 'paymentRequest=' . PKCS7::encrypt($body, $this->getPublicKey(), $this->getTempDir());
+        $payload = 'paymentRequest=' . PKCS7::encrypt($body, $this->getRequestPublicKey(), $this->getTempDir());
 
         $headers = [
             'Content-Type' => 'application/x-www-form-urlencoded'

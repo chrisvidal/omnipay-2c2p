@@ -16,7 +16,7 @@ class PaymentActionRefundRequest extends AbstractPaymentActionRequest
         $this->validate('amount', 'refundNotifyUrl');
 
         $data = $this->mergeData($data, [
-            'actionAmount' => $this->getAmount(),
+            'actionAmount' => number_format($this->getAmount(), 2),
             'notifyURL' => $this->getRefundNotifyUrl(),
 
             /** Only applicable to APM transaction Refund request */

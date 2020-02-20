@@ -2,7 +2,6 @@
 
 namespace Omnipay\CreditCardPaymentProcessor\Response;
 
-use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RequestInterface;
 use Omnipay\CreditCardPaymentProcessor\Common\RedirectReference;
 
@@ -86,7 +85,7 @@ class RedirectCompletePurchaseResponse extends AbstractResponse
         if (!isset($this->data['amount']))
             return 0;
 
-        return intval(ltrim('0', $this->data['amount'])) / 100;
+        return intval(ltrim($this->data['amount'], '0')) / 100;
     }
 
     public function getApprovalCode()
