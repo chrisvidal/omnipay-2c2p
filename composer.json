@@ -1,5 +1,5 @@
 {
-    "name": "laijingwu/omnipay-2c2p",
+    "name": "chrisvidal/omnipay-2c2p",
     "description": "2c2p gateway for Omnipay payment processing library",
     "keywords": [
         "gateway",
@@ -11,8 +11,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "laijingwu",
-            "email": "admin@laijingwu.com"
+            "name": "chris",
+            "email": "chris@voilaah.com"
         }
     ],
     "minimum-stability": "stable",
