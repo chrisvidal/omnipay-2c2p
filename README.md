@@ -2,6 +2,8 @@
 
 **2c2p driver for the Omnipay PHP payment processing library**
 
+**Compatible with 2c2p API v3.2.5**
+
 <!--[![Build Status](https://travis-ci.org/thephpleague/omnipay-2c2p.png?branch=master)](https://travis-ci.org/thephpleague/omnipay-2c2p)-->
 <!--[![Latest Stable Version](https://poser.pugx.org/omnipay/2c2p/version.png)](https://packagist.org/packages/omnipay/2c2p)-->
 <!--[![Total Downloads](https://poser.pugx.org/omnipay/2c2p/d/total.png)](https://packagist.org/packages/omnipay/2c2p)-->
@@ -17,7 +19,7 @@ to your `composer.json` file:
 ```json
 {
     "require": {
-        "dilab/omnipay-2c2p": "~2.0"
+        "chrisvidal/omnipay-2c2p": "~2.0"
     }
 }
 ```
