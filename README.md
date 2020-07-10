@@ -18,8 +18,14 @@ to your `composer.json` file:
 
 ```json
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/chrisvidal/omnipay-2c2p"
+        }
+    ],
     "require": {
-        "chrisvidal/omnipay-2c2p": "~2.0"
+        "laijingwu/omnipay-2c2p": "dev-master"
     }
 }
 ```
